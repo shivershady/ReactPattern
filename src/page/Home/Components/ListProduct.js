@@ -1,23 +1,37 @@
 import React, {useState, useContext} from 'react';
 
 import {Store} from "../../../ulti/Store";
+import {filterProduct} from "../../../services/productService";
+import {getCategories} from "../../../services/homeService";
 
 function ListProduct() {
-    const [showModal, setShowModal] = useState(false);
-
+    const [modal, setModal] = useState(false);
+    const [modalProduct, setModalProduct] = useState('');
+    const [filter, setFilter] = useState([]);
     const [store, dispatch] = useContext(Store);
     const products = store?.product?.data;
+
+    const handleFilterProduct = async (id) => {
+        try {
+            const resp = await filterProduct(id);
+            console.log(resp.data.data)
+        } catch (e) {
+            console.log(e)
+        }
+    }
+    console.log(products);
     return (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-4 w-full">
             {
                 (products || []).map((product, productIndex) => {
                     return (
-                        <div className="relative">
+                        <div className="relative" key={productIndex}>
                             <div
                                 className="relative p-4 w-full bg-white rounded-lg overflow-hidden shadow hover:shadow-md"
                                 style={{minHeight: '160px'}}
                                 onClick={() => {
-                                    setShowModal(true)
+                                    setModal(true);
+                                    setModalProduct(product);
                                 }}
                             >
                                 <div>
@@ -48,23 +62,24 @@ function ListProduct() {
                                 {/*    Order*/}
                                 {/*</button>*/}
                             </div>
-                            {showModal &&
-                                <div className="fixed top-0 left-0 right-0 bottom-0 z-30">
-                                    <div className="fixed top-0 left-0 right-0 bottom-0 z-30 bg-black opacity-20 z-30">
-                                    </div>
-                                    <button className="absolute right-4 z-50 text-white" onClick={()=>setShowModal(false)}>X</button>
-                                    <section className="text-gray-700 body-font overflow-hidden absolute top-0 right-0 bottom-0 left-0 flex items-center justify-center z-40">
-                                        <div className="container px-5 py-24 mx-auto ">
-                                            <div className="lg:w-4/5 mx-auto flex flex-wrap bg-white overflow-hidden">
-                                                <img alt="ecommerce"
-                                                     className="lg:w-1/2 w-full h-15 object-cover rounded border border-gray-200"
-                                                     src={"http://192.168.1.20/storage/"+product.thumb}/>
-                                                <div className="lg:w-1/2 w-full lg:pl-10 lg:py-6 mt-6 lg:mt-0">
-                                                    <h2 className="text-sm title-font text-gray-500 tracking-widest">BRAND
-                                                        NAME</h2>
-                                                    <h1 className="text-gray-900 text-3xl title-font font-medium mb-1">The
-                                                        Catcher in the Rye</h1>
-                                                    <div className="flex mb-4">
+                        </div>
+                    )
+                })
+            }
+            {modal &&
+                <div className="fixed top-0 left-0 right-0 bottom-0 z-30">
+                    <div className="fixed top-0 left-0 right-0 bottom-0 z-30 bg-black opacity-40 z-30">
+                    </div>
+                    <button className="absolute right-4 z-50 text-white" onClick={()=>setModal(false)}>X</button>
+                    <section className="text-gray-700 body-font overflow-hidden absolute top-0 right-0 bottom-0 left-0 flex items-center justify-center z-40">
+                        <div className="container px-5 py-24 mx-auto ">
+                            <div className="lg:w-4/5 mx-auto flex flex-wrap bg-white overflow-hidden">
+                                <img alt="ecommerce"
+                                     className="lg:w-1/2 w-full h-15 object-cover rounded border border-gray-200"
+                                     src={"http://192.168.1.20/storage/"+modalProduct.thumb}/>
+                                <div className="lg:w-1/2 w-full lg:pl-10 lg:py-6 mt-6 lg:mt-0">
+                                    <h1 className="text-gray-900 text-3xl title-font font-medium mb-1">{modalProduct.name}</h1>
+                                    <div className="flex mb-4">
                 <span className="flex items-center">
                   <svg fill="currentColor" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"
                        strokeWidth={2} className="w-4 h-4 text-red-500" viewBox="0 0 24 24">
@@ -93,8 +108,8 @@ function ListProduct() {
                   </svg>
                   <span className="text-gray-600 ml-3">4 Reviews</span>
                 </span>
-                                                        <span
-                                                            className="flex ml-3 pl-3 py-2 border-l-2 border-gray-200">
+                                        <span
+                                            className="flex ml-3 pl-3 py-2 border-l-2 border-gray-200">
                   <a className="text-gray-500">
                     <svg fill="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
                          className="w-5 h-5" viewBox="0 0 24 24">
@@ -116,69 +131,51 @@ function ListProduct() {
                     </svg>
                   </a>
                 </span>
-                                                    </div>
-                                                    <p className="leading-relaxed">Fam locavore kickstarter distillery.
-                                                        Mixtape chillwave tumeric sriracha taximy chia microdosing tilde
-                                                        DIY. XOXO fam indxgo juiceramps cornhole raw denim forage
-                                                        brooklyn. Everyday carry +1 seitan poutine tumeric. Gastropub
-                                                        blue bottle austin listicle pour-over, neutra jean shorts keytar
-                                                        banjo tattooed umami cardigan.</p>
-                                                    <div
-                                                        className="flex mt-6 items-center pb-5 border-b-2 border-gray-200 mb-5">
-                                                        <div className="flex">
-                                                            <span className="mr-3">Color</span>
-                                                            <button
-                                                                className="border-2 border-gray-300 rounded-full w-6 h-6 focus:outline-none"/>
-                                                            <button
-                                                                className="border-2 border-gray-300 ml-1 bg-gray-700 rounded-full w-6 h-6 focus:outline-none"/>
-                                                            <button
-                                                                className="border-2 border-gray-300 ml-1 bg-red-500 rounded-full w-6 h-6 focus:outline-none"/>
-                                                        </div>
-                                                        <div className="flex ml-6 items-center">
-                                                            <span className="mr-3">Size</span>
-                                                            <div className="relative">
-                                                                <select
-                                                                    className="rounded border appearance-none border-gray-400 py-2 focus:outline-none focus:border-red-500 text-base pl-3 pr-10">
-                                                                    <option>SM</option>
-                                                                    <option>M</option>
-                                                                    <option>L</option>
-                                                                    <option>XL</option>
-                                                                </select>
-                                                                <span
-                                                                    className="absolute right-0 top-0 h-full w-10 text-center text-gray-600 pointer-events-none flex items-center justify-center">
-                      <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"
-                           strokeWidth={2} className="w-4 h-4" viewBox="0 0 24 24">
-                        <path d="M6 9l6 6 6-6"/>
-                      </svg>
-                    </span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div className="flex">
+                                    </div>
+                                    <p className="leading-relaxed">{modalProduct.description}</p>
+                                    <p className="leading-relaxed">{modalProduct.content}</p>
+                                    <div
+                                        className="flex mt-6 justify-between items-center pb-5 border-b-2 border-gray-200 mb-5 mr-5">
+                                        {/*{*/}
+                                        {/*    modalProduct.filters.map((filter,index)=>{*/}
+                                        {/*        return(*/}
+                                        {/*            <div key={index}>*/}
+                                        {/*                <div className="mr-3">{filter.name}</div>*/}
+                                        {/*                {*/}
+                                        {/*                    filter.childs.map((child,index)=>{*/}
+                                        {/*                        return(*/}
+                                        {/*                            <div key={index}>*/}
+                                        {/*                                <input type="radio" value={`${child} ${index}`}/> {child}*/}
+                                        {/*                            </div>*/}
+                                        {/*                        )*/}
+                                        {/*                    })*/}
+                                        {/*                }*/}
+                                        {/*            </div>*/}
+                                        {/*        )*/}
+                                        {/*    })*/}
+                                        {/*}*/}
+                                    </div>
+                                    <div className="flex">
                                                         <span
                                                             className="title-font font-medium text-2xl text-gray-900">$58.00</span>
-                                                        <button
-                                                            className="flex ml-auto text-white bg-red-500 border-0 py-2 px-6 focus:outline-none hover:bg-red-600 rounded">Button
-                                                        </button>
-                                                        <button
-                                                            className="rounded-full w-10 h-10 bg-gray-200 p-0 border-0 inline-flex items-center justify-center text-gray-500 ml-4">
-                                                            <svg fill="currentColor" strokeLinecap="round"
-                                                                 strokeLinejoin="round" strokeWidth={2}
-                                                                 className="w-5 h-5" viewBox="0 0 24 24">
-                                                                <path
-                                                                    d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>
-                                                            </svg>
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </section>
+                                        <button
+                                            className="flex ml-auto text-white bg-red-500 border-0 py-2 px-6 focus:outline-none hover:bg-red-600 rounded">Button
+                                        </button>
+                                        <button
+                                            className="rounded-full w-10 h-10 bg-gray-200 p-0 border-0 inline-flex items-center justify-center text-gray-500 ml-4">
+                                            <svg fill="currentColor" strokeLinecap="round"
+                                                 strokeLinejoin="round" strokeWidth={2}
+                                                 className="w-5 h-5" viewBox="0 0 24 24">
+                                                <path
+                                                    d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>
+                                            </svg>
+                                        </button>
+                                    </div>
                                 </div>
-                            }
+                            </div>
                         </div>
-                    )
-                })
+                    </section>
+                </div>
             }
         </div>
     );
