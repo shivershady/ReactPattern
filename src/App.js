@@ -8,16 +8,17 @@ import Category from "./page/Category/Category";
 function App() {
     return (
         <div className="App">
-            <Header></Header>
+            <Header />
             <div className="container mx-auto">
                 <BrowserRouter>
                     <Routes>
-                        <Route path="/" element={<Home/>}></Route>
-                        <Route path="/category" element={<Category/>}/>
+                        <Route path="/" element={<Home />} />
+                        <Route path="/home" element={<Home />} />
+                        <Route path="/cart" element={<Category />} />
                     </Routes>
                 </BrowserRouter>
             </div>
-            <Footer></Footer>
+            <Footer />
         </div>
     );
 }

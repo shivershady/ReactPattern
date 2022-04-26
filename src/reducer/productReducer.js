@@ -1,79 +1,61 @@
-const initialSate = {
-    categories: {
+import * as TYPE from "../constant/product";
+
+const initialState = {
+    list: {
         loading: false,
         data: [],
         mess: null,
     },
-    product: {
+    detail: {
         loading: false,
         data: [],
         mess: null,
     },
 };
 
-const productReducer = (state = initialSate, action) => {
+const productReducer = (state = initialState, action) => {
     switch (action.type) {
-
-        case "GET_CATEGORIES":
+        case TYPE.GET_LIST_PRODUCT:
             return {
                 ...state,
-                categories: {
-                    ...state.categories,
+                list: {
+                    ...state.list,
                     loading: true,
                 },
             };
 
-        case "GET_CATEGORIES_SUCCESS":
+        case TYPE.GET_LIST_PRODUCT_SUCCESS:
             return {
                 ...state,
-                categories: {
-                    ...state.categories,
+                list: {
+                    ...state.list,
                     loading: false,
                     data: action.data,
                 },
             };
 
-        case "GET_CATEGORIES_ERROR":
+        case TYPE.GET_LIST_PRODUCT_ERROR:
             return {
                 ...state,
-                categories: {
-                    ...state.categories,
+                list: {
+                    ...state.list,
                     loading: false,
                     mess: action.mess,
                 },
             };
 
-        case "GET_PRODUCT":
+        case TYPE.GET_DETAIL_PRODUCT:
             return {
                 ...state,
-                product: {
-                    ...state.product,
-                    loading: true,
-                },
-            };
-
-        case "GET_PRODUCT_SUCCESS":
-            return {
-                ...state,
-                product: {
-                    ...state.product,
+                detail: {
+                    ...state.detail,
                     loading: false,
                     data: action.data,
-                },
-            };
-
-        case "GET_PRODUCT_ERROR":
-            return {
-                ...state,
-                product: {
-                    ...state.product,
-                    loading: false,
-                    mess: action.mess,
                 },
             };
 
         default:
-            return initialSate;
+            return initialState;
     }
 };
 

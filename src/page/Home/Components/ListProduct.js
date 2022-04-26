@@ -1,15 +1,17 @@
 import React, {useState, useContext} from 'react';
 
-import {Store} from "../../../ulti/Store";
 import {filterProduct} from "../../../services/productService";
 import {getCategories} from "../../../services/homeService";
+import {useDispatch, useSelector} from "react-redux";
 
 function ListProduct() {
+    const dispatch = useDispatch();
+    const temp = useSelector((state) => state);
+
     const [modal, setModal] = useState(false);
-    const [modalProduct, setModalProduct] = useState('');
-    const [filter, setFilter] = useState([]);
-    const [store, dispatch] = useContext(Store);
-    const products = store?.product?.data;
+    const [modalProduct, setModalProduct] = useState([]);
+
+    const products = temp?.product?.list?.data?.data;
 
     const handleFilterProduct = async (id) => {
         try {
@@ -19,7 +21,7 @@ function ListProduct() {
             console.log(e)
         }
     }
-    console.log(products);
+    console.log(modalProduct)
     return (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-4 w-full">
             {
@@ -50,7 +52,8 @@ function ListProduct() {
                                     <div className="relative block h-full">
                                         <div className="h-32 bg-gray-100 rounded-lg overflow-hidden">
                                             <img className="object-cover w-full h-full"
-                                                 src={"http://192.168.1.20/storage/" + product.thumb} alt=""/>
+                                                 src={process.env.REACT_APP_BASE_API + "storage/" + product.thumb[0]}
+                                                 alt=""/>
                                         </div>
                                     </div>
                                 </div>
@@ -70,13 +73,14 @@ function ListProduct() {
                 <div className="fixed top-0 left-0 right-0 bottom-0 z-30">
                     <div className="fixed top-0 left-0 right-0 bottom-0 z-30 bg-black opacity-40 z-30">
                     </div>
-                    <button className="absolute right-4 z-50 text-white" onClick={()=>setModal(false)}>X</button>
-                    <section className="text-gray-700 body-font overflow-hidden absolute top-0 right-0 bottom-0 left-0 flex items-center justify-center z-40">
+                    <button className="absolute right-4 z-50 text-white" onClick={() => setModal(false)}>X</button>
+                    <section
+                        className="text-gray-700 body-font overflow-hidden absolute top-0 right-0 bottom-0 left-0 flex items-center justify-center z-40">
                         <div className="container px-5 py-24 mx-auto ">
                             <div className="lg:w-4/5 mx-auto flex flex-wrap bg-white overflow-hidden">
                                 <img alt="ecommerce"
                                      className="lg:w-1/2 w-full h-15 object-cover rounded border border-gray-200"
-                                     src={"http://192.168.1.20/storage/"+modalProduct.thumb}/>
+                                     src={"http://192.168.1.20/storage/" + modalProduct.thumb}/>
                                 <div className="lg:w-1/2 w-full lg:pl-10 lg:py-6 mt-6 lg:mt-0">
                                     <h1 className="text-gray-900 text-3xl title-font font-medium mb-1">{modalProduct.name}</h1>
                                     <div className="flex mb-4">
@@ -133,28 +137,29 @@ function ListProduct() {
                 </span>
                                     </div>
                                     <p className="leading-relaxed">{modalProduct.description}</p>
-                                    <p className="leading-relaxed">{modalProduct.content}</p>
+                                    {/*<p className="leading-relaxed">{modalProduct.content}</p>*/}
                                     <div
-                                        className="flex mt-6 justify-between items-center pb-5 border-b-2 border-gray-200 mb-5 mr-5">
-                                        {/*{*/}
-                                        {/*    modalProduct.filters.map((filter,index)=>{*/}
-                                        {/*        return(*/}
-                                        {/*            <div key={index}>*/}
-                                        {/*                <div className="mr-3">{filter.name}</div>*/}
-                                        {/*                {*/}
-                                        {/*                    filter.childs.map((child,index)=>{*/}
-                                        {/*                        return(*/}
-                                        {/*                            <div key={index}>*/}
-                                        {/*                                <input type="radio" value={`${child} ${index}`}/> {child}*/}
-                                        {/*                            </div>*/}
-                                        {/*                        )*/}
-                                        {/*                    })*/}
-                                        {/*                }*/}
-                                        {/*            </div>*/}
-                                        {/*        )*/}
-                                        {/*    })*/}
-                                        {/*}*/}
+                                        className="flex mt-6 flex-col gap-4 pb-5 border-b-2 border-gray-200 mb-5 mr-5">
+                                        {
+                                            modalProduct.filters.map((filter,index)=>{
+                                                return(
+                                                    <div key={index}>
+                                                        <div className="mr-3 font-bold">{filter.name}</div>
+                                                        {
+                                                            filter.childs.map((child,index)=>{
+                                                                return(
+                                                                    <div key={index}>
+                                                                        <input type="checkbox"/>{child.name}
+                                                                    </div>
+                                                                )
+                                                            })
+                                                        }
+                                                    </div>
+                                                )
+                                            })
+                                        }
                                     </div>
+
                                     <div className="flex">
                                                         <span
                                                             className="title-font font-medium text-2xl text-gray-900">$58.00</span>

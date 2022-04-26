@@ -2,18 +2,18 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
-import {MyStore} from "./ulti/Store";
-
+import { Provider } from 'react-redux';
+import store from './ulti/store'
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <>
-        <MyStore>
+        <Provider store={store}>
             <React.StrictMode>
                 <App />
             </React.StrictMode>
-        </MyStore>
+        </Provider>
     </>
 
 );

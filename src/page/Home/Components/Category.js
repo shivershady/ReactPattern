@@ -1,17 +1,21 @@
 import React, {useEffect, useCallback, useState, useContext} from 'react';
 import {getCategories} from "../../../services/homeService";
-import {Store} from "../../../ulti/Store";
 import {getProductById} from "../../../services/productService";
+import { useDispatch, useSelector } from "react-redux";
+import {getListCategoriesSuccess} from '../../../action/categories'
+import {getListProduct,getListProductSuccess} from '../../../action/product'
 
 function Category() {
-    // const [categories, setCategories] = useState([]);
-    const [store, dispatch] = useContext(Store);
-    const categories = store?.categories?.data;
+    const dispatch = useDispatch();
+
+    const temp = useSelector((state) => state);
+
+    const categories = temp?.table?.data?.data;
 
     const listCategory = useCallback(async () => {
         try {
             const resp = await getCategories();
-            dispatch({type: "GET_CATEGORIES_SUCCESS", data: resp.data.data});
+            dispatch(getListCategoriesSuccess({data: resp.data.data}));
         } catch (e) {
             console.log(e)
         }
@@ -19,9 +23,9 @@ function Category() {
 
     const getProductHandle = async (id) => {
         try {
-            // dispatch({type: "GET_PRODUCT", id: id});
+            // dispatch(getListProduct({id: id}));
             const resp = await getProductById(id);
-            dispatch({type: "GET_PRODUCT_SUCCESS", data: resp.data.data})
+            dispatch(getListProductSuccess({data: resp.data.data}))
         } catch (e) {
             console.log(e)
         }
@@ -42,7 +46,7 @@ function Category() {
                             <div>
                                 <div className="relative block h-full">
                                     <div className="h-32 bg-gray-100 rounded-lg overflow-hidden">
-                                        <img src={"http://192.168.1.20/storage/"+category.thumb} alt=""/>
+                                        <img src={process.env.REACT_APP_BASE_API+"storage/"+category.thumb} alt=""/>
                                     </div>
                                 </div>
                             </div>

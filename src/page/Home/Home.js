@@ -7,9 +7,9 @@ function Home() {
     return (
         <div className="mb-8">
             {/*Category*/}
-           <Category></Category>
+           <Category/>
             {/*Product*/}
-            <ListProduct></ListProduct>
+            <ListProduct/>
         </div>
     );
 }
